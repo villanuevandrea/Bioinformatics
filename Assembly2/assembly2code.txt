@@ -1,0 +1,2 @@
+# abyss on paired end reads, kmer 96bp on putative UNKNOWN genome from UNZIPPED files (April 9th)
+abyss-pe name=unknown k=96 B=2G in='reads1.fastq.gz reads2.fastq.gz'

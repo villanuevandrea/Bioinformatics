@@ -1,0 +1,8 @@
+# activate your genome assembly environment
+conda/mamba activate genomeassembly
+
+# install prokka using conda/mamba
+Conda/mamba install -c conda-forge -c bioconda -c defaults prokka
+
+# run prokka
+prokka --outdir prokkaannotation --prefix salmonella AbyssOutput/salmonella-8.fa
