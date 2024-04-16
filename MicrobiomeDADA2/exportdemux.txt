@@ -1,0 +1,5 @@
+# activate qiime2
+conda activate qiime2-amplicon-2024.2
+
+# open demux.qza and exporting a feature table
+qiime tools export --input-path demux.qza --output-path sequences
