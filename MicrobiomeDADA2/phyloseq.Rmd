@@ -10,6 +10,7 @@ output: pdf_document
 library(phyloseq)
 library(dplyr)
 library(BiMiCo)
+library(ggplot2)
 ```
 
 # Load taxa and seqtab.nochim
@@ -64,3 +65,109 @@ physeq
 ```{r}
 save(physeq, file="RData/physeq.RData")
 ```
+
+# load physeq objects to start here 
+```{r}
+load("RData/physeq.RData")
+```
+
+# plot bar graph based on phylum
+```{r}
+plot_bar(physeq, fill = "Phylum") + geom_bar(aes(color=Phylum, fill=Phylum), stat="identity", position="fill")
+```
+
+# create a barplot of relative abundance
+```{r}
+# convert to relative abundance
+physeq_relabund <- transform_sample_counts(physeq, function(x) x / sum(x))
+
+# barplot
+plot_bar(physeq_relabund, fill = "Phylum") + geom_bar(aes(color=Phylum, fill=Phylum), stat="identity", position="fill") + facet_wrap(~subject, scales = "free")
+```
+
+# plot alpha diversity based on body.site
+```{r}
+plot_richness(physeq, x="body.site", color= "subject", measures=c("Observed", "Simpson", "Shannon"))
+```
+
+# plot alpha diversity based on reported.antibiotic.usage
+```{r}
+plot_richness(physeq, x="reported.antibiotic.usage", color= "body.site", measures=c("Observed", "Simpson", "Shannon"))
+```
+
+# plot alpha diversity based on subject
+```{r}
+plot_richness(physeq, x="subject", color= "body.site", measures=c("Observed", "Simpson", "Shannon"))
+```
+
+# test for normality
+```{r}
+alpha <- estimate_richness(physeq, measures=c("Observed", "Simpson", "Shannon"))
+```
+
+# shapiro-wilk
+```{r}
+observed <- shapiro.test(alpha$Observed)
+shannon <- shapiro.test(alpha$Shannon)
+simpson <- shapiro.test(alpha$Simpson)
+
+# print
+print(observed)
+print(shannon)
+print(simpson)
+```
+
+# create data frames for statistical analyses
+```{r}
+# extract sample information from the physeq object
+samples <- sample_data(physeq)
+
+# if samples is a phyloseq sample_data object, convert it to a data frame
+if (class(samples) == "sample_data") {
+  samples <- data.frame(sample_data(samples))
+}
+
+# add a column to alpha with sample names
+alpha$sample <- rownames(alpha)
+
+# merge alpha diversity data and sample data
+alpha <- merge(alpha, samples, by = "sample")
+```
+
+# perform statistics based on subject
+```{r}
+# perform t/wilcox tests for each biodiversity index
+test_observed <- wilcox.test(Observed ~ subject, data = alpha)
+test_simpson <- wilcox.test(Simpson ~ subject, data = alpha)
+test_shannon <- t.test(Shannon ~ subject, data = alpha)
+
+# printing the results
+print(test_observed)
+print(test_simpson)
+print(test_shannon)
+```
+
+# perform statistics based on reported.antibiotic.usage
+```{r}
+# perform t/wilcox tests for each biodiversity index
+test_observed <- wilcox.test(Observed ~ reported.antibiotic.usage, data = alpha)
+test_simpson <- wilcox.test(Simpson ~ reported.antibiotic.usage, data = alpha)
+test_shannon <- t.test(Shannon ~ reported.antibiotic.usage, data = alpha)
+
+# printing the results
+print(test_observed)
+print(test_simpson)
+print(test_shannon)
+```
+
+# test for body site
+```{r}
+kruskal.test(Simpson ~ body.site, data=alpha)
+pairwise.wilcox.test(alpha$Simpson, alpha$body.site, p.adjust.method="holm")
+kruskal.test(Observed ~ body.site, data=alpha)
+pairwise.wilcox.test(alpha$Observed, alpha$body.site, p.adjust.method="holm")
+shannonanova <- aov(Shannon ~ body.site, data=alpha)
+summary(shannonanova)
+TukeyHSD(shannonanova)
+```
+
