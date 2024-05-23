@@ -1,0 +1,3 @@
+Organism Scientific Name	Organism Common Name	Organism Qualifier	Taxonomy id	Assembly Name	Assembly Accession	Source	Annotation	Level	Contig N50	Size	Submission Date	Gene Count	BioProject	BioSample
+Campylobacter jejuni subsp. jejuni NCTC 11168 = ATCC 700819		strain: NCTC 11168	192222	ASM908v1	GCA_000009085.1	GenBank	Annotation submitted by Sanger Institute	Complete Genome	1641481	1641481	2003-05-06	1665	PRJNA8	SAMEA1705929
+Campylobacter jejuni subsp. jejuni NCTC 11168 = ATCC 700819		strain: NCTC 11168	192222	ASM908v1	GCF_000009085.1	RefSeq	Annotation submitted by NCBI RefSeq	Complete Genome	1641481	1641481	2003-05-06	1668	PRJNA8	SAMEA1705929

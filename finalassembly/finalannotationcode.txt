@@ -1,0 +1,2 @@
+# abyss on paired end reads, kmer 96bp on putative campylobacter genome
+ abyss-pe name=campylobacter k=96 B=2G in='reads1.fastq reads2.fastq'
